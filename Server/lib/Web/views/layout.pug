@@ -21,6 +21,7 @@ include module
 doctype html
 html
 	head
+		script(src='https://kit.fontawesome.com/b6555dc94f.js', crossorigin='anonymous')
 		block Subject
 		meta(charset='utf-8')
 		meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
@@ -58,17 +59,21 @@ html
 		div#Jungle
 			span#mobile= locals.mobile
 			span#summonerID= DATA._id
-			img#Background(src='/img/bg/' + (locals.bg || 'def.png'))
+			img#Background(alt="background" style="background-image:url('/img/kkutu/background.png');" src="")
 			block Jungle
 		div#Middle
 			block Middle
-		div#Bottom
-			block Bottom
-			div.bottom-legal
-				if locals.as_pc
-					a(href='?')= L('AS_MOBILE')
-				br
-				a.bottom-contact(href='http://blog.jjo.kr/', target='_blank')= L('CREATOR')
-				a.bottom-contact(href='mailto:op@jjo.kr', target='_blank') Contact op@jjo.kr
-			div.bottom-legal!= L('GPL')
-			+separator(10)
+		div#Footer
+			block Footer
+			div(style='margin-top: 5px; font-size: 12px; width: 500px; position: absolute; left: 15%; text-align: left;')
+				div.footer-title= L('footer1')
+				div.footer-contact(style='margin-top: 5px;')!= L('footer2')
+				a.footer-contact(href='https://wordnet.princeton.edu/', target='_blank')= L('footer3')
+				a.footer-contact(href='https://www.youtube.com/watch?v=1YVsuFg11gA', target='_blank') <br>로비 음악 - Essbee - bubble
+			div(style='margin-top: 5px; font-size: 12px; width: 700px; position: absolute; right: 15%; text-align: right;')
+				a(href='https://cafe.naver.com/kkutudotplus', target='_blank')= L('footer10')
+				a(href='https://discord.gg/k9wJkQmKvY', target='_blank', style='margin-left:10px;')= L('footer11')
+				a(href='https://www.youtube.com/channel/UC8ilnw7nSBiZOn-Fx-XaAeA', target='_blank', style='margin-left:10px;')= L('footer12')
+				a(href='/notice/operation.html', target='_blank', style='margin-left:10px;')= L('footer4')
+				a(href='/notice/privacy.html', target='_blank', style='margin-left:10px;')= L('footer5')
+				div!= L('GPL')

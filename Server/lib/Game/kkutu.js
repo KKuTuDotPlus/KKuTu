@@ -174,6 +174,7 @@ exports.Data = function(data){
 	this.playTime = data.playTime || 0;
 	this.connectDate = data.connectDate || 0;
 	this.record = {};
+	this.nickname = data.nickname || null;
 	for(i in Const.GAME_TYPE){
 		this.record[j = Const.GAME_TYPE[i]] = data.record ? (data.record[Const.GAME_TYPE[i]] || [0, 0, 0, 0]) : [0, 0, 0, 0];
 		if(!this.record[j][3]) this.record[j][3] = 0;
@@ -243,6 +244,7 @@ exports.Client = function(socket, profile, sid){
 	}
 	my.socket = socket;
 	my.place = 0;
+	my.nickname = null
 	my.team = 0;
 	my.ready = false;
 	my.game = {};
@@ -325,6 +327,7 @@ exports.Client = function(socket, profile, sid){
 			o.data = my.data;
 			o.money = my.money;
 			o.equip = my.equip;
+			o.nickname = my.nickname;
 			o.exordial = my.exordial;
 		}
 		return o;
@@ -416,6 +419,10 @@ exports.Client = function(socket, profile, sid){
 		}else DB.users.findOne([ '_id', my.id ]).on(function($user){
 			var first = !$user;
 			var black = first ? "" : $user.black;
+
+			/* Enhanced User Block System [S] */
+			const blockedUntil = (first || !$user.blockedUntil) ? null : $user.blockedUntil;
+			/* Enhanced User Block System [E] */
 			
 			if(first) $user = { money: 0 };
 			if(black == "null") black = false;
@@ -444,12 +451,19 @@ exports.Client = function(socket, profile, sid){
 			my.data = new exports.Data($user.kkutu);
 			my.money = Number($user.money);
 			my.friends = $user.friends || {};
+			my.nickname = $user.nickname || undefined;
+			if(my.nickname) my.profile.title = my.nickname;
 			if(first) my.flush();
 			else{
 				my.checkExpire();
 				my.okgCount = Math.floor((my.data.playTime || 0) / PER_OKG);
 			}
-			if(black) R.go({ result: 444, black: black });
+			/* Enhanced User Block System [S] */
+			if(black){
+				if(blockedUntil) R.go({ result: 444, black: black, blockedUntil: blockedUntil });
+				else R.go({ result: 444, black: black });
+			}
+			/* Enhanced User Block System [E] */
 			else if(Cluster.isMaster && $user.server) R.go({ result: 409, black: $user.server });
 			else if(exports.NIGHT && my.isAjae === false) R.go({ result: 440 });
 			else R.go({ result: 200 });
@@ -1197,7 +1211,7 @@ exports.Room = function(room, channel){
 				res[i].rank = Number(i);
 			}
 			pv = res[i].score;
-			rw = getRewards(my.mode, o.game.score / res[i].dim, o.game.bonus, res[i].rank, rl, sumScore);
+			rw = getRewards(my.mode, o.game.score / res[i].dim, o.game.bonus, res[i].rank, rl, sumScore, my.opts);
 			rw.playTime = now - o.playAt;
 			o.applyEquipOptions(rw); // 착용 아이템 보너스 적용
 			if(rw.together){
@@ -1291,10 +1305,13 @@ exports.Room = function(room, channel){
 		//return my.route("turnRobot", robot, text);
 	};
 	my.turnNext = function(force){
-		if(!my.gaming) return;
-		if(!my.game.seq) return;
-		
-		my.game.turn = (my.game.turn + 1) % my.game.seq.length;
+        if(!my.gaming) return;
+        if(!my.game.seq) return;
+        if(my.opts && my.opts.randomturn){
+            my.game.turn = Math.floor(Math.random()*my.game.seq.length)
+        } else {
+            my.game.turn = (my.game.turn + 1) % my.game.seq.length;
+        };
 		my.turnStart(force);
 	};
 	my.turnEnd = function(){
@@ -1373,7 +1390,7 @@ function getGuestName(sid){
 	for(i=0; i<len; i++){
 		res += sid.charCodeAt(i) * (i+1);
 	}
-	return "GUEST" + (1000 + (res % 9000));
+	return "손님" + (1000 + (res % 9000));
 }
 function shuffle(arr){
 	var i, r = [];
@@ -1383,9 +1400,15 @@ function shuffle(arr){
 	
 	return r;
 }
-function getRewards(mode, score, bonus, rank, all, ss){
+function getRewards(mode, score, bonus, rank, all, ss, opts){
+	if (opts.unknownword) {
+		return { score: 0, money: 0 } // 언노운워드는 보상이 없다.
+	}
 	var rw = { score: 0, money: 0 };
 	var sr = score / ss;
+
+	if (opts.returns) rw.score = rw.score * 0.5; // 리턴
+	if (opts.randomturn) rw.score = rw.score * 1.2; // 랜덤 턴
 	
 	// all은 1~8
 	// rank는 0~7
@@ -1438,6 +1461,7 @@ function getRewards(mode, score, bonus, rank, all, ss){
 	rw.score = rw.score
 		* (0.77 + 0.05 * (all - rank) * (all - rank)) // 순위
 		* 1.25 / (1 + 1.25 * sr * sr) // 점차비(양학했을 수록 ↓)
+		* 3
 	;
 	rw.money = 1 + rw.score * 0.01;
 	if(all < 2){

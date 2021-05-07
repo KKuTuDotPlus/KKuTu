@@ -67,7 +67,7 @@ word{
 	width: calc(30% - 1px);
 }
 #list{
-	height: 350px;
+	height: 450px;
 	overflow-y: scroll;
 }
 #contents{
@@ -84,7 +84,7 @@ word{
 .page-body{
 	display: none;
 	padding: 3px;
-	height: 347px;
+	height: 450px;
 	overflow-y: scroll;
 }
 .selected>label{

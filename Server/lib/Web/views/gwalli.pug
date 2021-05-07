@@ -17,7 +17,7 @@
 extends layout
 
 block Subject
-	title *** JJO.KR 관리 페이지 ***
+	title 끄투닷플러스 관리 페이지
 
 block JS
 	script(type="text/javascript", src="/js/in_admin.min.js")
@@ -28,26 +28,9 @@ block Middle
 		input#db-password(type='password', placeholder='암호')
 		input#db-lang(placeholder='테이블')
 	fieldset
-		legend 추가 요청 받기
-		div
-			button#injeong-go 조회
-			div
-				table
-					thead: tr
-						td 승인?
-						td 링크
-						td #
-						td theme
-						td writer
-						td createdAt
-					tbody#injeong-data
-			button#injeong-everything 모두 승인
-			button#injeong-nothing 모두 거절
-			button#injeong-apply 적용
-	fieldset
 		legend 상점 DB 다루기
 		div
-			input#shop-word(placeholder='품목 (~ALL)')
+			input#shop-word(placeholder='품목')
 			button#shop-go 조회
 			button#shop-hide 숨기기
 			div
@@ -68,24 +51,25 @@ block Middle
 			button#shop-add 추가
 			button#shop-apply 적용
 	fieldset
-		legend 유저 DB 다루기
+		legend 유저 프로필 다루기
 		div
 			input#user-id(placeholder='ID')
-			input#user-nick(placeholder='닉네임')
+			input#user-nick(placeholder='초기 닉네임')
 			button#user-go 조회
 			div
 				table
 					thead: tr
-						td #
-						td money
-						td kkutu
-						td box
-						td equip
-						td exordial
-						td server
-						td lastLogin
-						td black
-						td friends
+						td ID
+						td 핑
+						td 전적
+						td 인벤토리
+						td 착용 중인 아이템
+						td 소개 한마디
+						td 서버
+						td 최근 로그인
+						td 정지 사유
+						td 정지 기간
+						td 친구
 					tbody#user-data
 			button#user-apply 적용
 	fieldset
@@ -101,9 +85,9 @@ block Middle
 						td 서버
 					tbody#gamsi-data
 	fieldset
-		legend 끄투 DB 다루기
+		legend 단어 수정하기
 		div
-			input#db-word(placeholder='단어')
+			input#db-word(placeholder='수정할 단어를 입력하세요.')
 			button#db-go 조회
 			div#word-data
 				div#wd-id
@@ -120,15 +104,9 @@ block Middle
 			div#word-hit
 			button#word-add 추가
 			button#db-apply 적용
-	fieldset
-		legend 끄투 DB에 단어 추가하기
+	fieldset(style='margin-bottom: 100px;')
+		legend 단어 추가하기
 		div
-			input#db-theme(placeholder='주제 (~부터 적으면 검색)')
+			input#db-theme(placeholder='주제 코드를 입력하세요.')
 			textarea#db-list(rows=20, cols=100)
-			button#db-ok 확인
-	fieldset
-		legend 끄투에서의 인기 단어
-		button#kpw-query 조회
-		textarea#kpw-html
-		div#kpw-table
-		button#kpw-flush 반영
+			button#db-ok 추가

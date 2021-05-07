@@ -17,7 +17,7 @@
 extends layout
 
 block Subject
-	title= L('title')
+	title 끄투닷플러스 - 글자에 즐거움을 더하다.
 
 block CSS
 	link(rel='stylesheet', href='/css/in_game_kkutu.css')
@@ -26,30 +26,27 @@ block Middle
 	+separator(5)
 	div(style='float: left; width: 100%;')
 		div(style='float: left; padding-left: 70px;')
-			h3#holder= L('title').replace(/\[.+?\]/g, "")
-			img#logo(src='/img/kkutu/short_logo.png')
-		div#menu-bar(style='float: right; margin-top: 25px;')
-			a(target='_blank', href='//cafe.naver.com/sdbx', style='background-color: #63A95B;')= L('sandbox')
-			a(target='_blank', href='//blog.jjo.kr/', style='background-color: #4078DC;')= L('CREATOR')
 		div.jjoriping(style='margin-top: 40px;')
-			img.jjoObj.jjoEyeL(src='/img/jjoeyeL.png', style='left: -270px;')
-			img.jjoObj.jjoNose(src='/img/jjonose.png', style='left: -170px;')
-			img.jjoObj.jjoEyeR(src='/img/jjoeyeR.png', style='left: -70px;')
-			div.jjoDisplayBar(style='width: 325px; height: 85px;')
-				button#game-start.jjo-display= L('gameStart')
-	div(style='float: right; margin-top: -120px; width: 50%;')
-		div.server-list-box
-			h3.server-list-title
-				a#server-refresh
-					+FA('refresh')
-					+Expl(L('serverRefresh'))
-				label= L('serverList')
-				label#server-total(style='color: #AAA; font-size: 13px;')
-			div#server-list
-	div(style='float: left; width: calc(100% - 4px); border: 2px solid #CCC; margin-top: 10px; background-color: #EEE;')
-		iframe#kkutu-bulletin(width='100%', height='400px', src='/kkutu_bulletin.html')
+			button#game-start.portal-button=(L('gameStart'))
+			div#banner
+	div.server-list-box
+		h3.server-list-title
+			a#server-refresh
+				+FA('refresh')
+				+Expl(L('serverRefresh'))
+			label= L('serverList')
+			label#server-total(style='color: #AAA; font-size: 13px;')
+		div#server-list
+	div#pnt(style='margin: 80px 0px 0px 8px; float: right; width: 200px;') 바로가기
+		div(style='margin: 1.4px 0px 0px 8px; float: right; width: 200px; background-color: rgba(0, 0, 0, 0.3); height: 340px;')
+			button#hl(onclick="window.open('https://kkutu.kr')") <i class="fas fa-list-ul"></i> 끄투 목록
+			button#hl(onclick="window.open('https://cafe.naver.com/kkutudotplus')") <i class="fas fa-coffee"></i> 공식 카페
+			button#hl(onclick="window.open('https://discord.gg/k9wJkQmKvY')") <i class="fab fa-discord"></i> 디스코드
+			button#hl(onclick="window.open('https://www.youtube.com/channel/UC8ilnw7nSBiZOn-Fx-XaAeA')") <i class="fab fa-youtube"></i> 유튜브
+	div#pnt(style='margin-top: 80px; float: right; width: 525px;') 업데이트 내역
+	div(style='float: right; width: 525px; background-color: rgba(0, 0, 0, 0.3); height: 340px; margin-right: 208px;')
+		iframe#kkutu-bulletin(width='100%', height='340px', src='/portal_update.html')
+	div#pnt(style='margin-top: -20px; float: left; width: calc(27.1% - 4px);') 공지사항
+	div(style='float: left; width: calc(27.1% - 4px); background-color: rgba(0, 0, 0, 0.3); height: 340px;')
+		iframe#kkutu-bulletin(width='100%', height='340px', src='/portal_notice.html')
 	+separator(10)
-
-block Bottom
-	div.bottom-legal!= L('dictionarySupport')
-	div.bottom-legal!= L('etcSupport')

@@ -44,14 +44,23 @@
 	}
 
 /* NIK */
-.x-gm .users-name::before{ content: "[GM]"; color: #2F77D9; text-shadow: 0px 0px 2px #2AF; }
-.chat-item>.x-gm::before{ content: "[GM]"; color: #2F77D9; text-shadow: 0px 0px 2px #2AF; }
-.room-user-title>.x-gm::before{ content: "[GM]"; color: #2F77D9; text-shadow: 0px 0px 2px #2AF; }
+.x-gm .users-name::before{ content: "[운영]"; color: #d92f62; text-shadow: 0px 0px 2px #fc5b8b; }
+.chat-item>.x-gm::before{ content: "[운영]"; color: #d92f62; text-shadow: 0px 0px 2px #fc5b8b; }
+.room-user-title>.x-gm::before{ content: "[운영]"; color: #d92f62; text-shadow: 0px 0px 2px #fc5b8b; }
+.x-word .users-name::before{ content: "[단어]"; color: #2f2374; text-shadow: 0px 0px 2px #6650e4; }
+.chat-item>.x-word::before{ content: "[단어]"; color: #2f2374; text-shadow: 0px 0px 2px #6650e4; }
+.room-user-title>.x-word::before{ content: "[단어]"; color: #2f2374; text-shadow: 0px 0px 2px #6650e4; }
+.x-yt .users-name::before{ content: "[YT]"; color: #ff0000; text-shadow: 0px 0px 2px #ff5e5e; }
+.chat-item>.x-yt::before{ content: "[YT]"; color: #ff0000; text-shadow: 0px 0px 2px #ff5e5e; }
+.room-user-title>.x-yt::before{ content: "[YT]"; color: #ff0000; text-shadow: 0px 0px 2px #ff5e5e; }
 
 .x-red_name{ color: #FF3333; }
 .x-orange_name{ color: #FFA533; }
+.x-yellow_name{ color: #ffff00; }
 .x-green_name{ color: #43C227; }
 .x-blue_name{ color: #2F77D9; }
 .x-indigo_name{ color: #1C18B9; }
 .x-purple_name{ color: #A939CC; }
 .x-pink_name{ color: #F15F9A; }
+.x-mint_name{ color: #2fdd8c; }
+.x-redviolet_name{ color: #970030; }

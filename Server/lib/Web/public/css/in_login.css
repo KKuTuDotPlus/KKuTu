@@ -22,10 +22,11 @@ body{
 button{
 	border: none;
 	margin: 8px auto;
-	width: 200px;
-	height: 30px;
+	width: 250px;
+	height: 40px;
 	cursor: pointer;
-	box-shadow: 0px 2px 2px #141414;
+	box-shadow: 1px 1px 10px 0px #28445d;
+	border-radius: 4px;
 }
 #with-google span{ display: block; }
 .login-with{
@@ -40,3 +41,13 @@ button{
 	text-align: center;
 }
 .login-legal a{ color: #DDDDDD; }
+#login-name{
+	margin-left: 30px;
+}
+#login-icon{
+	width: 35px;
+	height: 35px;
+	background-size: 35px;
+	position: absolute;
+	margin-top: -24px;
+}

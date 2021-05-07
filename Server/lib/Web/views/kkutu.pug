@@ -38,7 +38,7 @@ mixin SettingOption(id, text, st)
 		label(for=id)= text
 
 block Subject
-	title= L('title')
+	title 끄투닷플러스 - 글자에 즐거움을 더하다.
 
 block JS
 	script(type='text/javascript', src='/js/in_game_kkutu.min.js')
@@ -77,6 +77,7 @@ block Middle
 		button#HelpBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #BBBBBB;')!= L('help')
 		button#SettingBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #CCCCCC;')!= L('settings')
 		button#CommunityBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #DAA9FF;')!= L('community')
+		button#LeaderboardBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #FFADD3;')!= L('leaderboard')
 		button#SpectateBtn.for-master.for-normal(style='display: none; background-color: #D19DFF;')= L('spectate')
 		button#SetRoomBtn.for-master(style='display: none; background-color: #B0D2F3;')= L('setRoom')
 		button#NewRoomBtn.for-lobby(style='display: none; background-color: #8EC0F3;')= L('newRoom')
@@ -90,13 +91,14 @@ block Middle
 		button#StartBtn.for-master(style='display: none; background-color: #FFB576;')= L('start')
 		button#ExitBtn.for-master.for-normal.for-gaming(style='display: none; background-color: #FFADAD;')= L('exit')
 		button#ReplayBtn.for-lobby(style='display: none; background-color: #D9FF82;')= L('replay')
-		button#LeaderboardBtn.for-lobby(style='display: none; background-color: #FFADD3;')!= L('leaderboard')
 		div#facebook-menu.fb-like.for-lobby.for-master.for-normal.for-gaming(data-href='http://kkutu.kr', data-width='300', data-layout='button_count', data-action='like', data-show-faces='true', data-share='true')
-	+Dialog('SettingDiag', 300, 240, L('settingsText'))
+	+Dialog('SettingDiag', 300, 290, L('settingsText'))
 		div.dialog-bar
-			h4= L('mute')
-			+SettingOption('mute-bgm', L('bgm'))
-			+SettingOption('mute-effect', L('effect'))
+			h4= L('bgm')
+			input#vol-bgm(type='range' min='-1' max='1' value='0.5' step='0.1' style='width: auto;')
+		div.dialog-bar
+			h4= L('effect')
+			input#vol-eff(type='range' min='-1' max='1' value='0.5' step='0.1' style='width: auto;')
 		div.dialog-bar
 			h4= L('denyReq')
 			+SettingOption('deny-invite', L('denyInvite'))
@@ -134,14 +136,14 @@ block Middle
 			button#lb-next(style='margin-right: 6px;')= L('nextPage')
 			button#lb-me= L('myRank')
 			button#lb-prev= L('prevPage')
-	+Dialog('QuickDiag', 300, 230, L('quickRoom'))
+	+Dialog('QuickDiag', 300, 250, L('quickRoom'))
 		div.dialog-bar
 			h4= L('gameMode')
 			select#quick-mode
 				- for(var i in locals.MODE)
 					option(value=Number(i))= L('mode' + locals.MODE[i])
-		div.dialog-bar(style='height: 59px;')
-			h4(style='height: 45px;')= L('misc')
+		div.dialog-bar(style='height: 85px;')
+			h4(style='height: 85px;')= L('misc')
 			- for(var i in locals.OPTIONS)
 				+GameOption(i, 'quick')
 		div.dialog-bar
@@ -150,7 +152,7 @@ block Middle
 			h4(style='width: 100%; height: 20px;')#quick-queue
 		div.dialog-bar.tail-button
 			button#quick-ok= L('OK')
-	+Dialog('RoomDiag', 300, 375)
+	+Dialog('RoomDiag', 300, 400)
 		div.dialog-bar
 			h4= L('roomTitle')
 			input#room-title(placeholder=(nick || L('guest'))+L('roomDefault'), maxlength=20)
@@ -194,8 +196,8 @@ block Middle
 				option(value=90)
 				option(value=120)
 				option(value=150)
-		div.dialog-bar(style='height: 59px;')
-			h4(style='height: 45px;')= L('misc')
+		div.dialog-bar(style='height: 80px;')
+			h4(style='height: 85px;')= L('misc')
 			- for(var i in locals.OPTIONS)
 				+GameOption(i, 'room')
 			div.dialog-opt#room-injpick-panel
@@ -265,13 +267,7 @@ block Middle
 			input#dict-input(style='width: 283px;', placeholder=L('wpInput'), maxlength=200)
 		div.dialog-bar#dict-output(style='height: 195px; overflow-y: scroll; color: #BBBBBB; background-color: #111111;')
 		div.dialog-bar.tail-button
-			select#dict-theme
-				option(value="")= L('pickInjeong')
-				- locals.KO_INJEONG.forEach(function(item){
-					option(value=item)= L('theme_' + item)
-				- });
 			button#dict-search= L('SEARCH')
-			button#dict-injeong= L('injeongReq')
 	+Dialog('InviteDiag', 300, 420, L('invite'))
 		div.invite-board(style='height: 355px; overflow-y: scroll;')
 		div.dialog-bar.tail-button
@@ -279,10 +275,10 @@ block Middle
 	+Dialog('RoomInfoDiag', 300, 365)
 		div.dialog-bar.room-info-head
 			h4= L('roomTitle')
-			h4.dialog-bar-value.ellipse#ri-title
 			h4= L('gameMode')
-			h4.dialog-bar-value#ri-mode
 			h4= L('rounds')
+			h4.dialog-bar-value.ellipse#ri-title
+			h4.dialog-bar-value#ri-mode
 			h4.dialog-bar-value#ri-round
 		div.dialog-bar(style='padding: 2px 0px; border-top: 1px dashed #CCC; margin: 2px 0px;')
 			h4= L('players')
@@ -291,7 +287,7 @@ block Middle
 			div#ri-players(style='width: 100%;')
 		div.dialog-bar.tail-button
 			button#room-info-join= L('join')
-	+Dialog('ProfileDiag', 300, 365)
+	+Dialog('ProfileDiag', 300, 400)
 		div.dialog-bar.profile-head
 		div.dialog-bar
 			h4(style='width: 83px;')= L('place')
@@ -309,7 +305,7 @@ block Middle
 			button#profile-level= L('aiSetting')
 			button#profile-dress= L('dress')
 			button#profile-handover= L('handover')
-	+Dialog('KickVoteDiag', 300, 160, L('kickVote'))
+	+Dialog('KickVoteDiag', 300, 1100, L('kickVote'))
 		div.dialog-bar#kick-vote-text(style='text-align: center;')
 		div.dialog-bar(style='text-align: center;')= L('kickVoteNotice')
 		div.dialog-bar
@@ -317,46 +313,49 @@ block Middle
 		div.dialog-bar.tail-button
 			button#kick-vote-no= L('disagree')
 			button#kick-vote-yes= L('agree')
-	+Dialog('PurchaseDiag', 300, 310, L('purchase'))
-		div.dialog-bar
-			h4= L('pingBefore')
-			h4.dialog-bar-value.purchase-ping#purchase-ping-before
-		div.dialog-bar
-			h4= L('pingCost')
-			h4.dialog-bar-value.purchase-ping#purchase-ping-cost
-		div.dialog-bar
-			h4= L('pingAfter')
-			h4.dialog-bar-value.purchase-ping#purchase-ping-after
-		div.dialog-bar
+	+Dialog('PurchaseDiag', 400, 250, L('purchase'))
+		div.dialog-bar(style="width: 36%; float: right;")
 			h4= L('moremiAfter')
 			div.moremi#moremi-after(style='float: left; width: 100px; height: 100px;')
-		div.dialog-bar
+		div.dialog-bar(style="width: 60%; margin-bottom: 8px;")
 			h4#purchase-item-name(style='width: 100%; font-weight: bold;')
-		div.dialog-bar
-			h4#purchase-item-desc(style='width: 100%;')
-		div.dialog-bar.tail-button
+		div.dialog-bar(style="width: 60%; margin-bottom: 8px;")
+			h4(style='width: 120px;')= L('pingBefore')
+			h4.dialog-bar-value.purchase-ping#purchase-ping-before(style='width: 120px;')
+		div.dialog-bar(style="width: 60%; margin-bottom: 8px;")
+			h4(style='width: 120px;')= L('pingCost')
+			h4.dialog-bar-value.purchase-ping#purchase-ping-cost(style='width: 120px;')
+		div.dialog-bar(style="width: 60%; margin-bottom: 8px;")
+			h4(style='width: 120px;')= L('pingAfter')
+			h4.dialog-bar-value.purchase-ping#purchase-ping-after(style='width: 120px;')
+		div.dialog-bar(style="width: 60%; margin-bottom: 8px;")
+			h4#purchase-item-desc(style='width: 400px; margin-top: 20px;')
+		div.dialog-bar.tail-button(style='width: 300px;')
 			button#purchase-no= L('NO')
 			button#purchase-ok= L('OK')
 	+Dialog('ReplayDiag', 300, 300, L('replay'))
 		input#replay-file(type='file', style='width: 288px;', accept=".kkt")
 		div.dialog-bar
 			h4= L('replayDate')
-			h4.dialog-bar-value#replay-date -
+			h4.dialog-bar-value#replay-date(style='width: 200px; text-align: left;') -
 			h4= L('VERSION')
-			h4.dialog-bar-value#replay-version -
+			h4.dialog-bar-value#replay-version(style='width: 200px; text-align: left;') -
 		div.dialog-bar
 			h4= L('replayPlayers')
-			h4.dialog-bar-value#replay-players -
+			h4.dialog-bar-value#replay-players(style='width: 200px; text-align: left;') -
 		div.dialog-bar.tail-button
 			button#replay-view= L('replayView')
-	+Dialog('DressDiag', 600, 280, L('dress'))
+	+Dialog('DressDiag', 640, 310, L('dress'))
+		div.dialog-bar
+			h4(style='width: 150px;')= L('myNickname')
+			input#dress-nickname(type='textfield', placeholder=L('myNicknameX'), style='width: 470px;', maxlength=10)
 		div.dialog-bar
 			h4(style='width: 150px;')= L('myExordial')
-			input#dress-exordial(type='textfield', placeholder=L('myExordialX'), style='width: 435px;', maxlength=100)
+			input#dress-exordial(type='textfield', placeholder=L('myExordialX'), style='width: 470px;', maxlength=100)
 		div.dialog-bar(style='width: 150px;')
 			div.moremi#dress-view(style='float: left; width: 150px; height: 150px;')
 			h4(style='width: 100%; font-weight: bold;')= L('myMoremi')
-		div.dialog-bar(style='padding: 5px; width: 440px;')
+		div.dialog-bar(style='padding: 5px; width: 480px;')
 			div(style='border-bottom: 1px solid #CCCCCC; height: 20px;')
 				- for(var i in locals.CATEGORIES)
 					- var v = locals.GROUPS[locals.CATEGORIES[i]] || [];
@@ -388,8 +387,8 @@ block Middle
 		div.dialog-bar#obtain-name(style='text-align: center;')
 		div.dialog-bar.tail-button
 			button#obtain-ok= L('OK')
-	+Dialog('HelpDiag', 550, 400, L('helpText'))
-		iframe#help-board(width=550, height=375)
+	+Dialog('HelpDiag', 800, 500, L('helpText'))
+		iframe#help-board(width=800, height=475)
 	+Product('UserList')
 		div 불러오는 중
 	+Product('RoomList')
@@ -452,7 +451,3 @@ block Middle
 		input#Talk(maxlength=200)
 		button#ChatBtn= L('send')
 	+Product('AD')
-
-block Bottom
-	div.bottom-legal!= L('dictionarySupport')
-	div.bottom-legal!= L('etcSupport')

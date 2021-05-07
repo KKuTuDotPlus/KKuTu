@@ -44,18 +44,51 @@
 
 #game-start{
 	float: left;
-	width: 315px;
+	width: 257.5px;
 	height: 70px;
-	font-size: 20px;
+	font-size: 22px;
 	font-weight: bold;
-	border: none;
-	border-bottom-left-radius: inherit;
-	border-bottom-right-radius: inherit;
 }
-	#game-start:hover{ font-size: 24px; background-color: rgba(0, 0, 0, 0.5); }
+	#game-start:hover{ font-size: 26px; background-color: rgba(0, 0, 0, 0.5); }
+#hl{
+	width: 200px;
+	height: 40px;
+	font-size: 20px;
+	border: none;
+	padding: 0px;
+	font-weight: bold;
+	border-radius: 0px;
+	background-color:rgba(0, 0, 0, 0);
+	color:white;
+}
+	#hl:hover{ font-size: 22px; background-color: rgba(255, 255, 255, 0.3); }
+#banner{
+	background-image: url(/img/portal/banner.png);
+	background-size: 733px 150px;
+	width: 733px;
+	height: 150px;
+	float: left;
+	position: absolute;
+	margin-left: 277px;
+	margin-top: 1px;
+}
+#pnt{
+	height:20px;
+	font-size:16px;
+	background-color: rgba(0, 0, 0, 0.6);
+	text-align: center;
+}
+.portal-button{
+	font-size: 20px;
+	text-align: center;
+	color: #EEEEEE;
+	background-color: rgba(0, 0, 0, 0.7);
+	border: 1px solid #aaaaaa00;
+}
 .server-list-box{
-	float: right;
-	width: 320px;
+	margin-top: 8px;
+	float: left;
+	width: 269.5px;
 	background-color: rgba(0, 0, 0, 0.4);
 }
 .server-list-title{
@@ -70,7 +103,7 @@
 .server{
 	float: left;
 	margin: 2px 0px;
-	width: 320px;
+	width: 269.5px;
 	height: 16px;
 	font-size: 13px;
 	cursor: pointer;
@@ -81,11 +114,11 @@
 		.ss-p{ background-color: #EE3; }
 		.ss-q{ background-color: #F55; }
 		.ss-x{ background-color: #777; }
-	.server-name{ width: 60px; }
-	.server-people{ width: 190px; height: 100%; }
+	.server-name{ width: 30px; margin: 0px 10px 0px 5px; }
+	.server-people{ width: 160px; height: 100%; }
 		.server-people>.graph-bar{ background-image: url(/img/blue_gauge.png); }
 		.server-people>label{ position: relative; display: block; top: -14px; width: 100%; text-align: center; font-size: 11px; }
-	.server-enter{ width: 50px; text-align: center; }
+	.server-enter{ width: 45px; text-align: center; }
 	.server:hover{ background-color: rgba(255, 255, 255, 0.1); }
 
 #Background{

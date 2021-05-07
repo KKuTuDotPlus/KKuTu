@@ -1,0 +1,55 @@
+//-
+	Rule the words! KKuTu Online
+	Copyright (C) 2017 JJoriping(op@jjo.kr)
+	
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with this program. If not, see <http://www.gnu.org/licenses/>.
+extends layout
+
+block Subject
+	title 끄투닷플러스 단어 페이지
+
+block JS
+	script(type="text/javascript", src="/js/in_word.min.js")
+	
+block Middle
+	fieldset
+		legend 자격
+		input#db-password(type='password', placeholder='암호')
+		input#db-lang(placeholder='테이블')
+	fieldset
+		legend 단어 수정하기
+		div
+			input#db-word(placeholder='수정할 단어를 입력하세요.')
+			button#db-go 조회
+			div#word-data
+				div#wd-id
+				input#wd-flag
+				table
+					thead: tr
+						td #
+						td type
+						td theme
+						td mean
+						td 행동
+					tbody#wd-data
+			div#word-flag
+			div#word-hit
+			button#word-add 추가
+			button#db-apply 적용
+	fieldset
+		legend 단어 추가하기
+		div
+			input#db-theme(placeholder='주제 코드를 입력하세요.')
+			textarea#db-list(rows=20, cols=100)
+			button#db-ok 추가
