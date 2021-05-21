@@ -64,11 +64,11 @@ function showDialog($d, noToggle){
 function applyOptions(opt){
 	$data.opts = opt;
 	
-	$data.muteBGM = $data.opts.mb;
-	$data.muteEff = $data.opts.me;
+	$data.BGMVolume = parseFloat($data.opts.bv);
+	$data.EffectVolume = parseFloat($data.opts.ev);
 	
-	$("#mute-bgm").attr('checked', $data.muteBGM);
-	$("#mute-effect").attr('checked', $data.muteEff);
+	$("#bgm-volume").val($data.BGMVolume);
+	$("#effect-volume").val($data.EffectVolume);
 	$("#deny-invite").attr('checked', $data.opts.di);
 	$("#deny-whisper").attr('checked', $data.opts.dw);
 	$("#deny-friend").attr('checked', $data.opts.df);
@@ -78,11 +78,11 @@ function applyOptions(opt){
 	$("#only-unlock").attr('checked', $data.opts.ou);
 	
 	if($data.bgm){
-		if($data.muteBGM){
+		if($data.BGMVolume == 0){
 			$data.bgm.volume = 0;
 			$data.bgm.stop();
 		}else{
-			$data.bgm.volume = 1;
+			$data.bgm.volume = $data.BGMVolume;
 			$data.bgm = playBGM($data.bgm.key, true);
 		}
 	}
@@ -236,8 +236,12 @@ function onMessage(data){
 			$data._playTime = data.playTime;
 			$data._okg = data.okg;
 			$data._gaming = false;
+			$data.nickname = data.nickname;
+			$data.exordial = data.exordial;
 			$data.box = data.box;
+			$data.nickLimit = data.nickLimit;
 			if(data.test) alert(L['welcomeTestServer']);
+			notice(L['welcomemessage']);
 			if(location.hash[1]) tryJoin(location.hash.slice(1));
 			updateUI(undefined, true);
 			welcome();
@@ -314,6 +318,25 @@ function onMessage(data){
 		case 'user':
 			$data.setUser(data.id, data);
 			if($data.room) updateUI($data.room.id == data.place);
+			break;
+		case 'updateProfile':
+			$data.users[data.id].nickname = data.nickname;
+			$data.users[data.id].exordial = data.exordial;
+			break;
+		case 'reloadData':
+			$data.id = data.id;
+			$data.guest = data.guest;
+			$data.admin = data.admin;
+			$data.users = data.users;
+			$data.rooms = data.rooms;
+			$data.friends = data.friends;
+			$data._playTime = data.playTime;
+			$data._okg = data.okg;
+			$data.nickname = data.nickname;
+			$data.exordial = data.exordial;
+			$data.box = data.box;
+			updateUI(undefined, true);
+			updateCommunity();
 			break;
 		case 'friends':
 			$data._friends = {};
@@ -495,6 +518,26 @@ function onMessage(data){
 					alert("생년월일이 올바르게 입력되지 않아 게임 이용이 제한되었습니다. 잠시 후 다시 시도해 주세요.");
 					break;
 				}
+				/* Enhanced User Block System [S] */
+				if(data.blockedUntil) {
+					var blockedUntil = new Date(parseInt(data.blockedUntil));
+					var block = "\n제한 시점: " + blockedUntil.getFullYear() + "년 " + blockedUntil.getMonth() + 1 + "월 " +
+					blockedUntil.getDate() + "일 " + blockedUntil.getHours() + "시 " + blockedUntil.getMinutes() + "분까지";
+
+					alert("[#444] " + L['error_444'] + i + block);
+					break;
+				}
+			}else if(data.code == 446){
+				i = data.reasonBlocked;
+				if(data.ipBlockedUntil) {
+					var blockedUntil = new Date(parseInt(data.ipBlockedUntil));
+					var block = "\n제한 시점: " + blockedUntil.getFullYear() + "년 " + blockedUntil.getMonth() + 1 + "월 " +
+					blockedUntil.getDate() + "일 " + blockedUntil.getHours() + "시 " + blockedUntil.getMinutes() + "분까지";
+
+					alert("[#446] " + L['error_446'] + i + block);
+					break;
+				}
+			/* Enhanced User Block System [E] */
 			} else if (data.code === 447) {
 				alert("자동화 봇 방지를 위한 캡챠 인증에 실패했습니다. 메인 화면에서 다시 시도해 주세요.");
 				break;
@@ -519,6 +562,8 @@ function welcome(){
 	}, 2000);
 	
 	if($data.admin) console.log("관리자 모드");
+
+	isWelcome = true;
 }
 function getKickText(profile, vote){
 	var vv = L['agree'] + " " + vote.Y + ", " + L['disagree'] + " " + vote.N + L['kickCon'];
@@ -964,6 +1009,8 @@ function userListBar(o, forInvite){
 function addonNickname($R, o){
 	if(o.equip['NIK']) $R.addClass("x-" + o.equip['NIK']);
 	if(o.equip['BDG'] == "b1_gm") $R.addClass("x-gm");
+	if(o.equip['BDG'] == "b1_word") $R.addClass("x-word");
+	if(o.equip['BDG'] == "b1_yt") $R.addClass("x-yt");
 }
 function updateRoomList(refresh){
 	var i;
@@ -1229,6 +1276,7 @@ function drawMyDress(avGroup){
 	renderMoremi($view, my.equip);
 	$(".dress-type.selected").removeClass("selected");
 	$("#dress-type-all").addClass("selected");
+	$("#dress-nickname").val(my.nickname);
 	$("#dress-exordial").val(my.exordial);
 	drawMyGoods(avGroup || true);
 }
@@ -1542,7 +1590,7 @@ function requestRoomInfo(id){
 	$stage.dialog.roomInfo.show();
 }
 function requestProfile(id){
-	var o = $data.users[id] || $data.robots[id];
+	var o = $data.users[id] || $data.robots[id] || $data.users["guest__"+id];
 	var $rec = $("#profile-record").empty();
 	var $pi, $ex;
 	var i;
@@ -1556,7 +1604,7 @@ function requestProfile(id){
 		.append($("<div>").addClass("profile-head-item")
 			.append(getImage(o.profile.image).addClass("profile-image"))
 			.append($("<div>").addClass("profile-title ellipse").html(o.profile.title || o.profile.name)
-				.append($("<label>").addClass("profile-tag").html(" #" + o.id.toString().substr(0, 5)))
+			.append($("<div>").addClass("profile-tag").html(" #" + o.id.toString().substr(0, 30)))
 			)
 		)
 		.append($("<div>").addClass("profile-head-item")
@@ -1576,10 +1624,15 @@ function requestProfile(id){
 		$("#profile-place").html(o.place ? (o.place + L['roomNumber']) : L['lobby']);
 		for(i in o.data.record){
 			var r = o.data.record[i];
+
+			if (r[0] != 0) {
+				var pct = (r[1] / r[0] * 100).toFixed(2);
+			} else var pct = "0.00";
 			
 			$rec.append($("<div>").addClass("profile-record-field")
 				.append($("<div>").addClass("profile-field-name").html(L['mode' + i]))
 				.append($("<div>").addClass("profile-field-record").html(r[0] + L['P'] + " " + r[1] + L['W']))
+				.append($("<div>").addClass("profile-field-winning-rate").html(String(pct) + '%'))
 				.append($("<div>").addClass("profile-field-score").html(commify(r[2]) + L['PTS']))
 			);
 		}
@@ -2489,6 +2542,13 @@ function getLevel(score){
 	return i+1;
 }
 function getLevelImage(score){
+	if(score < 0){
+		return $("<div>").css({
+			'float' : "left",
+			'background-image': "url('/img/kkutu/lv/gmlevel.png')",
+			'background-size' : "100%"
+		});
+	};
 	var lv = getLevel(score) - 1;
 	var lX = (lv % 25) * -100;
 	var lY = Math.floor(lv * 0.04) * -100;
@@ -2524,6 +2584,7 @@ function setRoomHead($obj, room){
 	$obj.empty()
 		.append($("<h5>").addClass("room-head-number").html("["+(room.practice ? L['practice'] : room.id)+"]"))
 		.append($("<h5>").addClass("room-head-title").text(badWords(room.title)))
+		.append($("<h5>").addClass("room-head-kkutu").html("KKuTu.plus"))
 		.append($rm = $("<h5>").addClass("room-head-mode").html(opts.join(" / ")))
 		.append($("<h5>").addClass("room-head-limit").html((mobile ? "" : (L['players'] + " ")) + room.players.length + " / " +room.limit))
 		.append($("<h5>").addClass("room-head-round").html(L['rounds'] + " " + room.round))
@@ -2591,23 +2652,28 @@ function stopBGM(){
 }
 function playSound(key, loop){
 	var src, sound;
-	var mute = (loop && $data.muteBGM) || (!loop && $data.muteEff);
+	var bgmMuted = loop && $data.BGMVolume == 0;
+	var effectMuted = !loop && $data.EffectVolume == 0;
 	
 	sound = $sound[key] || $sound.missing;
 	if(window.hasOwnProperty("AudioBuffer") && sound instanceof AudioBuffer){
+		var gainNode = audioContext.createGain();
 		src = audioContext.createBufferSource();
 		src.startedAt = audioContext.currentTime;
 		src.loop = loop;
-		if(mute){
+		if(bgmMuted || effectMuted){
+			gainNode.gain.value = 0;
 			src.buffer = audioContext.createBuffer(2, sound.length, audioContext.sampleRate);
 		}else{
+			gainNode.gain.value = (loop ? $data.BGMVolume : $data.EffectVolume) || 0.5;
 			src.buffer = sound;
 		}
-		src.connect(audioContext.destination);
+		gainNode.connect(audioContext.destination);
+		src.connect(gainNode);
 	}else{
 		if(sound.readyState) sound.audio.currentTime = 0;
 		sound.audio.loop = loop || false;
-		sound.audio.volume = mute ? 0 : 1;
+		sound.audio.volume = mute ? 0 : ((loop ? $data.BGMVolume : $data.EffectVolume) || 0.5);
 		src = sound;
 	}
 	if($_sound[key]) $_sound[key].stop();
@@ -2690,11 +2756,11 @@ function chat(profile, msg, from, timestamp){
 		$bar = ($data.room.gaming ? 2 : 0) + ($(".jjoriping").hasClass("cw") ? 1 : 0);
 		chatBalloon(msg, profile.id, $bar);
 	}
-	$stage.chat.append($item = $("<div>").addClass("chat-item")
-		.append($bar = $("<div>").addClass("chat-head ellipse").text(profile.title || profile.name))
-		.append($msg = $("<div>").addClass("chat-body").text(msg))
-		.append($("<div>").addClass("chat-stamp").text(time.toLocaleTimeString()))
-	);
+	$stage.chat.append($item = $("<div>").addClass("chat-item") 
+ 		.append($bar = $("<div>").addClass("chat-head ellipse").text(profile.title || profile.name)) 
+ 		.append($msg = equip["BDG"]==="b1_gm"?$("<div>").addClass("chat-body").html(msg):$("<div>").addClass("chat-body").text(msg)) 
+ 		.append($("<div>").addClass("chat-stamp").text(time.toLocaleTimeString())) 
+ 	); 
 	if(timestamp) $bar.prepend($("<i>").addClass("fa fa-video-camera"));
 	$bar.on('click', function(e){
 		requestProfile(profile.id);
@@ -2843,10 +2909,12 @@ function renderMoremi(target, equip){
 			.css({ 'width': "100%", 'height': "100%" })
 		);
 	}
-	$obj.children(".moremi-back").after($("<img>").addClass("moremies moremi-body")
-		.attr('src', equip.robot ? "/img/kkutu/moremi/robot.png" : "/img/kkutu/moremi/body.png")
-		.css({ 'width': "100%", 'height': "100%" })
+	var moremibody = $obj.children(".moremi-skin").after($("<img>").addClass("moremies moremi-body")
+		.css({ 'width': "100%", 'height': "100%", 'display': "none" })
 	);
+	if(equip.robot === true){
+		moremibody.attr('src', "/img/kkutu/moremi/skin/robot.png")
+	};
 	$obj.children(".moremi-rhand").css('transform', "scaleX(-1)");
 }
 function commify(val){
